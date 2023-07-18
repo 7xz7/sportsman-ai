@@ -6,48 +6,45 @@ public class TimeUtils {
     public static String getDay() {
         DateTime dt = new DateTime();
         DateTime.Property pDoW = dt.dayOfWeek();
-        String strST = pDoW.getAsShortText(); // returns "Mon", "Tue", etc.
-//        String strT = pDoW.getAsText(); // returns "Monday", "Tuesday", etc.
-        return strST;
+        //        String strT = pDoW.getAsText(); // returns "Monday", "Tuesday", etc.
+        return pDoW.getAsShortText();
     }
 
     public static String getMonth() {
         DateTime dt = new DateTime();
-        String month = dt.monthOfYear().getAsText();
-        return month;
+        return dt.monthOfYear().getAsText();
     }
 
     public static  String getDate() {
         DateTime dt = new DateTime();
-        String date = dt.dayOfMonth().getAsText();
-        return date;
+        return dt.dayOfMonth().getAsText();
     }
 
     public static String getYear() {
         DateTime dt = new DateTime();
-        Integer year = dt.getYear();
-        return year.toString();
+        int year = dt.getYear();
+        return Integer.toString(year);
     }
 
     public static String getTime() {
         DateTime dt = new DateTime();
-        Integer hour = dt.getHourOfDay();
-        Integer min = dt.getMinuteOfHour();
+        int hour = dt.getHourOfDay();
+        int min = dt.getMinuteOfHour();
         String ans = "";
         if( hour >= 12 ) {
             if( hour > 12 ) hour -= 12;
-            ans += hour.toString();
+            ans += Integer.toString(hour);
             ans += ":";
-            if( min.toString().length() == 1 ) ans += "0" + min.toString();
-            else ans += min.toString();
+            if( Integer.toString(min).length() == 1 ) ans += "0" + min;
+            else ans += Integer.toString(min);
             ans += "pm";
         }
         else {
             if(hour == 0) hour = 12;
-            ans += hour.toString();
+            ans += Integer.toString(hour);
             ans += ":";
-            if( min.toString().length() == 1 ) ans += "0" + min.toString();
-            else ans += min.toString();
+            if( Integer.toString(min).length() == 1 ) ans += "0" + min;
+            else ans += Integer.toString(min);
             ans += "am";
         }
         return ans;

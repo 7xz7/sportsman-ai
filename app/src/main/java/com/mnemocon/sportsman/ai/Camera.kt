@@ -69,8 +69,7 @@ class Camera : Fragment() {
 
 
     private val viewModel: CameraViewModel by lazy {
-        ViewModelProvider(this, CameraViewModel.Factory(dataSource, requireActivity().application))
-            .get(CameraViewModel::class.java)
+        ViewModelProvider(this, CameraViewModel.Factory(dataSource, requireActivity().application))[CameraViewModel::class.java]
     }
 
     override fun onAttach(context: Context) {
@@ -179,18 +178,17 @@ class Camera : Fragment() {
             else if( squats == true ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing squats", Toast.LENGTH_SHORT).show()
         }
 
-        binding.cardStartStop?.setOnClickListener {
+        binding.cardStartStop.setOnClickListener {
             if(viewModel.isStart) {
                 val temp: Long = (System.currentTimeMillis()/1000) - viewModel.start_time
                 val direction =
                     CameraDirections.actionCameraToCountingStopped(viewModel.pushups_cnt, viewModel.squats_cnt, temp.toInt())
-                var yo = TimeUtils.getTime() + " - " + TimeUtils.getDay() + " - " + TimeUtils.getMonth() + ", " + TimeUtils.getYear();
+                val yo = TimeUtils.getTime() + " - " + TimeUtils.getDay() + " - " + TimeUtils.getMonth() + ", " + TimeUtils.getYear()
                 lifecycleScope.launch {
-                    viewModel.database.insert(Table( dateTime = yo, duration = "Duration: " + getTime(temp.toInt()).toString(), pushups = "Pushups: " + viewModel.pushups_cnt.toString(), squats = "Squats: " + viewModel.squats_cnt.toString() ))
+                    viewModel.database.insert(Table( dateTime = yo, duration = "Duration: " + getTime(temp.toInt()), pushups = "Pushups: " + viewModel.pushups_cnt.toString(), squats = "Squats: " + viewModel.squats_cnt.toString() ))
                 }
                 findNavController().navigate(direction)
-            }
-            else {
+            } else {
                 viewModel.start_time = System.currentTimeMillis()/1000
                 viewModel.isStart = true
                 binding.cardStartStop.setBackgroundColor(Color.parseColor("#b71c1c"))
@@ -200,13 +198,12 @@ class Camera : Fragment() {
             }
         }
 
-        binding.mute?.setOnClickListener {
+        binding.mute.setOnClickListener {
             viewModel.mute = !viewModel.mute
             if( viewModel.mute ) {
                 binding.mute.setImageResource(R.drawable.mute_red)
                 Toast.makeText(application, "Voice mode deactivated", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 binding.mute.setImageResource(R.drawable.mute_white)
                 Toast.makeText(application, "Voice mode activated", Toast.LENGTH_SHORT).show()
             }
@@ -229,21 +226,21 @@ class Camera : Fragment() {
             binding.flash.visibility = View.INVISIBLE
             viewModel.isFlash = false
         }
-        if(viewModel.isFlash == true) {
+        if(viewModel.isFlash) {
             binding.flash.setImageResource(R.drawable.flash_on_white)
         }
-        if((viewModel.isFlash == false) && (viewModel.which_camera == 1)) {
+        if(!viewModel.isFlash && (viewModel.which_camera == 1)) {
             binding.flash.setImageResource(R.drawable.flash_off_white)
         }
         bindUseCases(viewModel.which_camera, viewModel.isFlash, viewModel.isStart)
     }
 
     private fun bindUseCases(which_camera: Int, isFlashOn: Boolean, isStart: Boolean) {
-        var needUpdateGraphicOverlayImageSourceInfo: Boolean = true
+        var needUpdateGraphicOverlayImageSourceInfo = true
 
         Log.d("Camera", "hohoho")
 
-        viewModel.cameraProviderFuture.addListener(Runnable {
+        viewModel.cameraProviderFuture.addListener({
             // Preview
             preview = Preview.Builder()
                 .build()
@@ -257,31 +254,41 @@ class Camera : Fragment() {
                 it.setAnalyzer(
                     // imageProcessor.processImageProxy will use another thread to run the detection underneath,
                     // thus we can just runs the analyzer itself on main thread.
-                    ContextCompat.getMainExecutor(safeContext),
-                    ImageAnalysis.Analyzer { imageProxy: ImageProxy ->
-                        Log.d("FaceDetection", "huhuhuh2")
-                        if (needUpdateGraphicOverlayImageSourceInfo) {
-                            val isImageFlipped = which_camera == CameraSelector.LENS_FACING_FRONT
-                            val rotationDegrees = imageProxy.imageInfo.rotationDegrees
-                            if (rotationDegrees == 0 || rotationDegrees == 180) {
-                                Log.d("FaceDetection", "huhuhuh4")
-                                graphicOverlay!!.setImageSourceInfo(imageProxy.width, imageProxy.height, isImageFlipped)
-                            } else {
-                                Log.d("FaceDetection", "huhuhuh5")
-                                graphicOverlay!!.setImageSourceInfo(imageProxy.height, imageProxy.width, isImageFlipped)
-                                Log.d("FaceDetection", "huhuhuh6")
-                            }
-                            needUpdateGraphicOverlayImageSourceInfo = false
+                    ContextCompat.getMainExecutor(safeContext)
+                ) { imageProxy: ImageProxy ->
+                    Log.d("FaceDetection", "huhuhuh2")
+                    if (needUpdateGraphicOverlayImageSourceInfo) {
+                        val isImageFlipped = which_camera == CameraSelector.LENS_FACING_FRONT
+                        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
+                        if (rotationDegrees == 0 || rotationDegrees == 180) {
+                            Log.d("FaceDetection", "huhuhuh4")
+                            graphicOverlay!!.setImageSourceInfo(
+                                imageProxy.width,
+                                imageProxy.height,
+                                isImageFlipped
+                            )
+                        } else {
+                            Log.d("FaceDetection", "huhuhuh5")
+                            graphicOverlay!!.setImageSourceInfo(
+                                imageProxy.height,
+                                imageProxy.width,
+                                isImageFlipped
+                            )
+                            Log.d("FaceDetection", "huhuhuh6")
                         }
-                        try {
-                            Log.d("FaceDetection", "huhuhuh3")
-                            processImageProxy(imageProxy, graphicOverlay)
-                        } catch (e: MlKitException) {
-                            Log.e("FaceDetection", "Failed to process image. Error: " + e.localizedMessage)
-                            Toast.makeText(safeContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
-                        }
+                        needUpdateGraphicOverlayImageSourceInfo = false
                     }
-                )
+                    try {
+                        Log.d("FaceDetection", "huhuhuh3")
+                        processImageProxy(imageProxy, graphicOverlay)
+                    } catch (e: MlKitException) {
+                        Log.e(
+                            "FaceDetection",
+                            "Failed to process image. Error: " + e.localizedMessage
+                        )
+                        Toast.makeText(safeContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
 
 //             Select back camera as a default
@@ -313,29 +320,28 @@ class Camera : Fragment() {
         if (mediaImage != null) {
             val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
             Log.d("Camera", "dis3")
-            val result = viewModel.poseDetector.process(image)
+            viewModel.poseDetector.process(image)
                 .continueWith(classificationExecutor
                 ) { results ->
                     Log.d("Camera", "dis1")
                     val pose = results.result
-                    var classificationResult: List<String> = java.util.ArrayList()
-                    classificationResult = viewModel.poseClassifierProcessor.getPoseResult(pose)
+                    val classificationResult: List<String> = viewModel.poseClassifierProcessor.getPoseResult(pose)
                     PoseWithClassification(pose, classificationResult)
 //                    Log.d("Camera", "dis1")
                 }
                 .addOnSuccessListener(executor) { results ->
-                    var ff: Boolean = false
+                    var ff = false
                     Log.d("Camera", "dis2")
                     val temp = results.classificationResult
                     assert(temp.size <= 2)
                     if (temp.size == 2) {
                         val hu = temp[0]
                         val hu_list = stringToWords(hu)
-                        assert(hu_list.size == 4 || hu_list.size == 0)
+                        assert(hu_list.size == 4 || hu_list.isEmpty())
                         if (hu_list.size == 4) {
                             if ((hu_list[0] == "pushups_down") && (pushups == true)) {
                                 ff = true
-                                var haha: Boolean = false
+                                var haha = false
                                 if ((viewModel.now != "pushups")) {
                                     viewModel.now = "pushups"
                                     ++viewModel.pushups
@@ -354,10 +360,10 @@ class Camera : Fragment() {
                                     TextToSpeech.QUEUE_FLUSH,
                                     null,
                                     null
-                                );
+                                )
                             } else if ((hu_list[0] == "squats_down") && (squats == true)) {
                                 ff = true
-                                var haha: Boolean = false
+                                var haha = false
                                 if ((viewModel.now != "squats")) {
                                     viewModel.now = "squats"
                                     ++viewModel.squats
@@ -375,7 +381,7 @@ class Camera : Fragment() {
                                     TextToSpeech.QUEUE_FLUSH,
                                     null,
                                     null
-                                );
+                                )
                             }
                             binding.tv1.text = "PUSHUPS: " + viewModel.pushups_cnt.toString()
                             binding.tv2.text = "SQUATS: " + viewModel.squats_cnt.toString()
@@ -387,12 +393,12 @@ class Camera : Fragment() {
                             graphicOverlay,
                             results.pose,
 //                            results,
-                            true,
-                            true,
-                            true,
-                            results.classificationResult,
+                            showInFrameLikelihood = true,
+                            visualizeZ = true,
+                            rescaleZForVisualization = true,
+                            poseClassification = results.classificationResult,
 //                        ArrayList()
-                            ff
+                            ff = ff
                         )
                     )
                      graphicOverlay.postInvalidate()
@@ -416,13 +422,13 @@ class Camera : Fragment() {
 
     private fun getTime(ttime: Int): String {
         var time = ttime
-        var hour = time!!.div(3600)
-        time = time!! % 3600
-        var minute = time!!.div(60)
-        time = time!! % 60
-        var sec = time
+        val hour = time.div(3600)
+        time = time % 3600
+        val minute = time.div(60)
+        time = time % 60
+        val sec = time
 
-        var ans : String = "Time: "
+        var ans = "Time: "
 
         if( hour == 0 && minute == 0 ) {
             ans += sec.toString() + "s"
@@ -430,9 +436,7 @@ class Camera : Fragment() {
         else {
             if(hour > 0) ans += hour.toString() + "h"
             if(minute > 0) ans += minute.toString() + "m"
-            if (sec != null) {
-                if(sec > 0) ans += sec.toString() + "s"
-            }
+            if(sec > 0) ans += sec.toString() + "s"
         }
         return ans
     }

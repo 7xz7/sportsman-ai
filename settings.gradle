@@ -6,5 +6,5 @@
 //        jcenter() // Warning: this repository is going to shut down soon
 //    }
 //}
-rootProject.name = "Get Fit"
+rootProject.name = "Sportsman AI"
 include ':app', ":library"
