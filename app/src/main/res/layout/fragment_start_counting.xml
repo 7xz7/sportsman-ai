@@ -93,7 +93,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_medium"
                         android:gravity="center"
-                        android:text="SQUATS ONLY"
+                        android:text="@string/squats_only"
                         android:textAppearance="?attr/textAppearanceListItem"
                         android:textColor="#000000"
                         android:textSize="24sp"
