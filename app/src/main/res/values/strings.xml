@@ -9,5 +9,8 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="squats_only"><font color="red">Приседания</font></string>
+    <string name="squats_only">Приседания</string>
+    <string name="pushups_only">Отжимания</string>
+    <string name="pushups_amp_squats"><![CDATA[Отжимания и Приседания]]></string>
+    <string name="start_counting">Свободный стиль</string>
 </resources>

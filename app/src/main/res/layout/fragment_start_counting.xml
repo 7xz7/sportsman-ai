@@ -2,19 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#0d46a0">
 
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@mipmap/ic_launcher_foreground" />
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="417dp"
+        android:layout_height="731dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fon1" />
 
-        <ImageButton
+    <ImageButton
             android:id="@+id/imageButton2"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -52,19 +53,15 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        style="@style/MyTextViewStyle"
                         android:id="@+id/start_counting"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        android:text="PUSHUPS ONLY"
-                        android:textAppearance="?attr/textAppearanceListItem"
-                        android:textColor="#000000"
-                        android:textSize="24sp"
+                        android:text="@string/pushups_only"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -88,15 +85,11 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        style="@style/MyTextViewStyle"
                         android:id="@+id/see_past_counts"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
                         android:text="@string/squats_only"
-                        android:textAppearance="?attr/textAppearanceListItem"
-                        android:textColor="#000000"
-                        android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -124,15 +117,11 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        style="@style/MyTextViewStyle"
                         android:id="@+id/message"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        android:text="PUSHUPS &amp; SQUATS"
-                        android:textAppearance="?attr/textAppearanceListItem"
-                        android:textColor="#000000"
-                        android:textSize="24sp"
+                        android:text="@string/pushups_amp_squats"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -151,9 +140,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:fontFamily="@font/roboto_bold"
-            android:text="START COUNTING"
+            android:text="@string/start_counting"
             android:textColor="#ffffff"
             android:textSize="22sp"
+            android:textAllCaps="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageButton2" />
  </androidx.constraintlayout.widget.ConstraintLayout>
