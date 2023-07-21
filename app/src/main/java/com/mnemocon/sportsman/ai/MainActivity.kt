@@ -1,5 +1,5 @@
 package com.mnemocon.sportsman.ai
-
+// Импорт необходимых библиотек и классов
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
@@ -37,11 +37,11 @@ class MainActivity : AppCompatActivity() {
     // [END declare_auth]
 
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    // Объявление переменных для связки, аутентификации и авторизации через Google
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Request camera permissions
+        // Запрос разрешений на использование камеры
         if (allPermissionsGranted()) {
             startLogic()
         } else {
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // [START config_signin]
-        // Configure Google Sign In
+        // Настройка входа в систему Google
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("651908455888-j7made5nss0ak0b9vshr36fe2nn8n815.apps.googleusercontent.com")
             .requestEmail()
@@ -60,17 +60,17 @@ class MainActivity : AppCompatActivity() {
         // [END config_signin]
 
         // [START initialize_auth]
-        // Initialize Firebase Auth
+        // Инициализация Firebase Auth
         auth = Firebase.auth
         // [END initialize_auth]
     }
-
+    // Проверка на наличие необходимых разрешений
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
-
+    // Обработка результатов запроса разрешений
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String>, grantResults:
         IntArray) {
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
+    // Запуск основной логики приложения
     fun startLogic() {
         Log.d("babu", "babu")
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -99,8 +99,8 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         //val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        //Передаем идентификатор каждого меню в виде набора идентификаторов, поскольку каждое
+        // меню должно рассматриваться как пункты назначения верхнего уровня.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.startCounting, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
@@ -110,86 +110,87 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
-
+    // Показать нижнее меню навигации
     fun showBottomNavigation()
     {
         binding.navView.visibility = View.VISIBLE
         val actionBar: ActionBar? = supportActionBar //Get action bar reference
         actionBar?.show() //Hide the action bar
     }
-
+    // Скрыть нижнее меню навигации
     fun hideBottomNavigation()
     {
         binding.navView.visibility = View.GONE
         val actionBar: ActionBar? = supportActionBar //Get action bar reference
         actionBar?.hide() //Hide the action bar
     }
-
+    // Проверка авторизованного пользователя при старте активности
     // [START on_start_check_user]
     override fun onStart() {
         super.onStart()
             signIn{}
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Проверяем, вошел ли пользователь в систему (non-null), и соответствующим образом обновляем пользовательский интерфейс.
         val currentUser = auth.currentUser
         updateUI(currentUser)
     }
     // [END on_start_check_user]
+    // Обработка результата авторизации через Google
     // [START onactivityresult]
     private val signInLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                // Handle the result here
+                // Обрабатываем результат здесь
                 val data = result.data
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 try {
-                    // Google Sign In was successful, authenticate with Firebase
+                    // Google Sign In был успешным, аутентификация с помощью Firebase
                     val account = task.getResult(ApiException::class.java)!!
                     Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                     firebaseAuthWithGoogle(account.idToken!!)
-                    // Set the success parameter to true
+                    // Установить параметр success в значение true
                     success(true)
                 } catch (e: ApiException) {
-                    // Google Sign In failed, update UI appropriately
+                    // Google Sign In failed, обновите пользовательский интерфейс соответствующим образом
                     Log.w(TAG, "Google sign in failed", e)
-                    // Set the success parameter to false
+                    // Установить параметр success в значение false
                     success(false)
                 }
             } else {
-                // The result code was not OK, set the success parameter to false
+                // Код результата не был OK, установите параметр success в false
                 success(false)
             }
         }
     // [END onactivityresult]
-
+// Запуск процесса авторизации через Google
     // [START signin]
    fun signIn(success: (Boolean) -> Unit) {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
     }
     // [END signin]
-
+// Авторизация через Firebase с использованием данных от Google
     // [START auth_with_google]
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
+                    // Успех входа в систему, обновление пользовательского интерфейса с информацией о вошедшем пользователе
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
                     updateUI(user)
                 } else {
-                    // If sign in fails, display a message to the user.
+                    // Если вход в систему не удался, выведите пользователю сообщение.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                     updateUI(null)
                 }
             }
     }
     // [END auth_with_google]
-
+// Обновление пользовательского интерфейса на основе данных пользователя
     private fun updateUI(user: FirebaseUser?) {
     }
-
+    // Объявление статических констант
     companion object {
         private const val TAG = "GoogleActivity"
         private const val REQUEST_CODE_PERMISSIONS = 10

@@ -6,13 +6,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Wraps an existing executor to provide a {@link #shutdown} method that allows subsequent
- * cancellation of submitted runnables.
+ * Обертывает существующий исполнитель, чтобы предоставить метод {@link #shutdown},
+ * который позволяет последующую отмену отправленных задач.
  */
 public class ScopedExecutor implements Executor {
 
-  private final Executor executor;
-  private final AtomicBoolean shutdown = new AtomicBoolean();
+  private final Executor executor; // Оригинальный исполнитель
+  private final AtomicBoolean shutdown = new AtomicBoolean(); // Флаг для отслеживания состояния "завершено"
 
   public ScopedExecutor(@NonNull Executor executor) {
     this.executor = executor;
@@ -20,25 +20,25 @@ public class ScopedExecutor implements Executor {
 
   @Override
   public void execute(@NonNull Runnable command) {
-    // Return early if this object has been shut down.
+    // Ранний выход, если этот объект был завершен
     if (shutdown.get()) {
       return;
     }
     executor.execute(
-        () -> {
-          // Check again in case it has been shut down in the mean time.
-          if (shutdown.get()) {
-            return;
-          }
-          command.run();
-        });
+            () -> {
+              // Повторная проверка на случай, если он был завершен между временем
+              if (shutdown.get()) {
+                return;
+              }
+              command.run();
+            });
   }
 
   /**
-   * After this method is called, no runnables that have been submitted or are subsequently
-   * submitted will start to execute, turning this executor into a no-op.
+   * После вызова этого метода ни одни из отправленных или последующих задач не начнут выполняться,
+   * превращая этот исполнитель в неработающий.
    *
-   * <p>Runnables that have already started to execute will continue.
+   * <p>Задачи, которые уже начали выполняться, будут продолжены.
    */
   public void shutdown() {
     shutdown.set(true);

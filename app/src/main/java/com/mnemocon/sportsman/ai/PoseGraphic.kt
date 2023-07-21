@@ -10,24 +10,27 @@ import java.lang.Math.max
 import java.lang.Math.min
 import java.util.Locale
 
-/** Draw the detected pose in preview.  */
+/**
+ * Рисует обнаруженную позу на предварительном просмотре.
+ */
 class PoseGraphic internal constructor(
   overlay: GraphicOverlay,
-  private val pose: Pose,
-  private val showInFrameLikelihood: Boolean,
-  private val visualizeZ: Boolean,
-  private val rescaleZForVisualization: Boolean,
-  private val poseClassification: List<String>,
+  private val pose: Pose, // Обнаруженная поза
+  private val showInFrameLikelihood: Boolean, // Флаг для показа вероятности позы в кадре
+  private val visualizeZ: Boolean, // Флаг для визуализации оси Z
+  private val rescaleZForVisualization: Boolean, // Флаг для масштабирования оси Z для визуализации
+  private val poseClassification: List<String>, // Классификация позы
   private val ff: Boolean
 ) : GraphicOverlay.Graphic(overlay) {
-  private var zMin = java.lang.Float.MAX_VALUE
-  private var zMax = java.lang.Float.MIN_VALUE
-  private val classificationTextPaint: Paint
-  private val leftPaint: Paint
-  private val rightPaint: Paint
-  private val whitePaint: Paint
+  private var zMin = java.lang.Float.MAX_VALUE // Минимальное значение по оси Z
+  private var zMax = java.lang.Float.MIN_VALUE // Максимальное значение по оси Z
+  private val classificationTextPaint: Paint // Краска для текста классификации
+  private val leftPaint: Paint // Краска для левой стороны
+  private val rightPaint: Paint // Краска для правой стороны
+  private val whitePaint: Paint // Белая краска
 
   init {
+    // Инициализация параметров краски
     classificationTextPaint = Paint()
     classificationTextPaint.color = Color.WHITE
     classificationTextPaint.textSize = POSE_CLASSIFICATION_TEXT_SIZE
@@ -44,14 +47,14 @@ class PoseGraphic internal constructor(
     rightPaint.strokeWidth = STROKE_WIDTH
     rightPaint.color = Color.YELLOW
   }
-
+  // Функция для рисования позы на холсте
   override fun draw(canvas: Canvas) {
     val landmarks = pose.allPoseLandmarks
     if (landmarks.isEmpty()) {
       return
     }
 
-    // Draw pose classification text.
+    // Рисование текста классификации позы
     val classificationX = POSE_CLASSIFICATION_TEXT_SIZE * 0.5f
     for (i in poseClassification.indices) {
       val classificationY = canvas.height - (
@@ -67,7 +70,7 @@ class PoseGraphic internal constructor(
       )
     }
 
-    // Draw all the points
+    // Построить все точки
     for (landmark in landmarks) {
       drawPoint(canvas, landmark, whitePaint)
       if (visualizeZ && rescaleZForVisualization) {
@@ -75,6 +78,7 @@ class PoseGraphic internal constructor(
         zMax = max(zMax, landmark.position3D.z)
       }
     }
+// Извлечение ключевых точек (landmarks) лица из обнаруженной позы.
 
     val nose = pose.getPoseLandmark(PoseLandmark.NOSE)
     val lefyEyeInner = pose.getPoseLandmark(PoseLandmark.LEFT_EYE_INNER)
@@ -87,6 +91,8 @@ class PoseGraphic internal constructor(
     val rightEar = pose.getPoseLandmark(PoseLandmark.RIGHT_EAR)
     val leftMouth = pose.getPoseLandmark(PoseLandmark.LEFT_MOUTH)
     val rightMouth = pose.getPoseLandmark(PoseLandmark.RIGHT_MOUTH)
+
+// Извлечение ключевых точек (landmarks) верхней и нижней части тела из обнаруженной позы.
 
     val leftShoulder = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER)
     val rightShoulder = pose.getPoseLandmark(PoseLandmark.RIGHT_SHOULDER)
@@ -101,6 +107,8 @@ class PoseGraphic internal constructor(
     val leftAnkle = pose.getPoseLandmark(PoseLandmark.LEFT_ANKLE)
     val rightAnkle = pose.getPoseLandmark(PoseLandmark.RIGHT_ANKLE)
 
+// Извлечение ключевых точек (landmarks) рук и ног из обнаруженной позы.
+
     val leftPinky = pose.getPoseLandmark(PoseLandmark.LEFT_PINKY)
     val rightPinky = pose.getPoseLandmark(PoseLandmark.RIGHT_PINKY)
     val leftIndex = pose.getPoseLandmark(PoseLandmark.LEFT_INDEX)
@@ -112,7 +120,7 @@ class PoseGraphic internal constructor(
     val leftFootIndex = pose.getPoseLandmark(PoseLandmark.LEFT_FOOT_INDEX)
     val rightFootIndex = pose.getPoseLandmark(PoseLandmark.RIGHT_FOOT_INDEX)
 
-    // Face
+    // Лицо
     drawLine(canvas, nose, lefyEyeInner, whitePaint)
     drawLine(canvas, lefyEyeInner, lefyEye, whitePaint)
     drawLine(canvas, lefyEye, leftEyeOuter, whitePaint)
@@ -126,7 +134,7 @@ class PoseGraphic internal constructor(
     drawLine(canvas, leftShoulder, rightShoulder, whitePaint)
     drawLine(canvas, leftHip, rightHip, whitePaint)
 
-    // Left body
+    // Левая часть тела
     drawLine(canvas, leftShoulder, leftElbow, leftPaint)
     drawLine(canvas, leftElbow, leftWrist, leftPaint)
     drawLine(canvas, leftShoulder, leftHip, leftPaint)
@@ -139,7 +147,7 @@ class PoseGraphic internal constructor(
     drawLine(canvas, leftAnkle, leftHeel, leftPaint)
     drawLine(canvas, leftHeel, leftFootIndex, leftPaint)
 
-    // Right body
+    // Правая часть тела
     drawLine(canvas, rightShoulder, rightElbow, rightPaint)
     drawLine(canvas, rightElbow, rightWrist, rightPaint)
     drawLine(canvas, rightShoulder, rightHip, rightPaint)
@@ -152,7 +160,7 @@ class PoseGraphic internal constructor(
     drawLine(canvas, rightAnkle, rightHeel, rightPaint)
     drawLine(canvas, rightHeel, rightFootIndex, rightPaint)
 
-    // Draw inFrameLikelihood for all points
+    // Строим inFrameLikelihood для всех точек
     if (showInFrameLikelihood) {
       for (landmark in landmarks) {
         canvas.drawText(
@@ -164,13 +172,14 @@ class PoseGraphic internal constructor(
       }
     }
   }
+// Рисует точку на холсте на основе координат указанной точки позы с заданным стилем рисования.
 
   internal fun drawPoint(canvas: Canvas, landmark: PoseLandmark, paint: Paint) {
     val point = landmark.position3D
     maybeUpdatePaintColor(paint, canvas, point.z)
     canvas.drawCircle(translateX(point.x), translateY(point.y), DOT_RADIUS, paint)
   }
-
+//функция предназначена для рисования линии между двумя заданными точками позы на заданном холсте с использованием заданного стиля рисования.
   internal fun drawLine(
     canvas: Canvas,
     startLandmark: PoseLandmark?,
@@ -180,7 +189,7 @@ class PoseGraphic internal constructor(
     val start = startLandmark!!.position3D
       val end = endLandmark!!.position3D
 
-    // Gets average z for the current body line
+    // Получает среднее значение z для текущей линии тела
     val avgZInImagePixel = (start.z + end.z) / 2
     maybeUpdatePaintColor(paint, canvas, avgZInImagePixel)
 
@@ -192,7 +201,7 @@ class PoseGraphic internal constructor(
         paint
       )
   }
-
+  // Функция для обновления цвета краски на основе значения z
   internal fun maybeUpdatePaintColor(
     paint: Paint,
     canvas: Canvas,
@@ -202,8 +211,8 @@ class PoseGraphic internal constructor(
       return
     }
 
-    // When visualizeZ is true, sets up the paint to different colors based on z values.
-    // Gets the range of z value.
+    // Если visualizeZ равен true, то в зависимости от значения z происходит настройка окраски в разные цвета.
+    // Получает диапазон значений z.
     val zLowerBoundInScreenPixel: Float
     val zUpperBoundInScreenPixel: Float
 
@@ -211,7 +220,7 @@ class PoseGraphic internal constructor(
       zLowerBoundInScreenPixel = min(-0.001f, scale(zMin))
       zUpperBoundInScreenPixel = max(0.001f, scale(zMax))
     } else {
-      // By default, assume the range of z value in screen pixel is [-canvasWidth, canvasWidth].
+      // По умолчанию предполагается, что диапазон значений z в пикселях экрана равен [-canvasWidth, canvasWidth].
       val defaultRangeFactor = 1f
       zLowerBoundInScreenPixel = -defaultRangeFactor * canvas.width
       zUpperBoundInScreenPixel = defaultRangeFactor * canvas.width
@@ -237,7 +246,7 @@ class PoseGraphic internal constructor(
   }
 
   companion object {
-
+    // Константы для рисования и визуализации
     private val DOT_RADIUS = 8.0f
     private val IN_FRAME_LIKELIHOOD_TEXT_SIZE = 30.0f
     private val STROKE_WIDTH = 10.0f

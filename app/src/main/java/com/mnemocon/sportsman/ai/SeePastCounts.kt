@@ -13,6 +13,7 @@ import com.mnemocon.sportsman.ai.data.AppDatabase
 import com.mnemocon.sportsman.ai.data.Datum
 import com.mnemocon.sportsman.ai.databinding.FragmentSeePastCountsBinding
 
+// Фрагмент для просмотра прошлых записей
 class SeePastCounts : Fragment() {
     private lateinit var binding: FragmentSeePastCountsBinding
 
@@ -20,17 +21,19 @@ class SeePastCounts : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Установка ориентации экрана в портретный режим
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        // Инициализация привязки
         binding = FragmentSeePastCountsBinding.inflate(layoutInflater, container, false)
 
         val application = requireNotNull(this.activity).application
 
-        // Create an instance of the ViewModel Factory.
+        // Создание экземпляра фабрики ViewModel
         val dataSource = AppDatabase.getInstance(application).dao
         val viewModelFactory = SeePastCountsViewModelFactory(dataSource, application)
 
-        // Get a reference to the ViewModel associated with this fragment.
+        // Получение ссылки на ViewModel, связанную с этим фрагментом
         val viewModel = ViewModelProvider(this, viewModelFactory).get(SeePastCountsViewModel::class.java)
 
         binding.viewModel = viewModel
@@ -40,12 +43,14 @@ class SeePastCounts : Fragment() {
 
         binding.cardList.adapter = adapter
 
+        // Обработчик клика для кнопки "Назад"
         binding.imageButton.setOnClickListener {
             findNavController().navigateUp()
         }
 
+        // Наблюдение за данными и их обновление в адаптере
         viewModel.data.observe(viewLifecycleOwner, Observer { items ->
-            var hmm = ArrayList<Datum.Card>()
+            val hmm = ArrayList<Datum.Card>()
             for(item in items) {
                 hmm.add(Datum.Card(item.id, item.dateTime, item.duration, item.pushups, item.squats))
             }
@@ -54,6 +59,7 @@ class SeePastCounts : Fragment() {
         return binding.root
     }
 
+    // При отсоединении фрагмента возвращаем стандартную ориентацию экрана
     override fun onDetach() {
         super.onDetach()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED

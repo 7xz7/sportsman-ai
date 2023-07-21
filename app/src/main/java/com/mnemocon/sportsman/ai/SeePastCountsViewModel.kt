@@ -8,18 +8,19 @@ import com.mnemocon.sportsman.ai.data.Dao
 import com.mnemocon.sportsman.ai.data.Table
 import kotlinx.coroutines.launch
 
-class SeePastCountsViewModel(val database: Dao,
-                             application: Application
+// ViewModel для просмотра прошлых записей
+class SeePastCountsViewModel(
+    val database: Dao, // Источник данных
+    application: Application // Приложение
 ) : AndroidViewModel(application) {
 
+    // Данные для отображения
     lateinit var data: LiveData<List<Table>>
 
     init {
+        // Получение данных при инициализации ViewModel
         viewModelScope.launch {
             data = database.getTable()
         }
     }
-
-
-
 }
