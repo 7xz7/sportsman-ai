@@ -1,5 +1,5 @@
 package com.mnemocon.sportsman.ai
-
+// Импортирование необходимых библиотек и модулей
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -11,14 +11,14 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.mnemocon.sportsman.ai.databinding.FragmentInfoBinding
-
+// Основной класс фрагмента, который отображает информацию
 class InfoFragment : Fragment() {
-
+    // Объявление переменных для привязки и текстовых строк
     private lateinit var binding: FragmentInfoBinding
 
-    private val description: String = "<p> Machine learning was used to make this app. The domains of machine learning that we used are Pose Estimation and K-means clustering. <br/> Pose Estimation is used to estimate the key points of the human body and track their movements. <br/> K-means clustering is an unsupervised machine learning algorithm. It basically takes the dataset and searches for pattern inside it and group the similar data together into a cluster. Hence multiple clusters are formed. <br/> Here in our app we trained the K-means cluster unsupervised model by training it on a dataset containing hundreds of pushup and squats images. Those images were taken from different angles so that the model could find a generalized solution and avoid overfitting.<p>"
-    private val title: String = "Magic of Machine Learning"
-
+    private val description: String = "<p> При создании этого приложения было использовано машинное обучение. Области машинного обучения, которые мы использовали, - это оценка позы и кластеризация K-средних. Оценка позы используется для определения ключевых точек человеческого тела и отслеживания их движений. Кластеризация K-means - это алгоритм машинного обучения без контроля. По сути, он берет набор данных, выполняет поиск шаблона внутри него и группирует похожие данные вместе в кластер. Следовательно, образуется множество кластеров. <br/> Здесь, в нашем приложении, мы обучили неконтролируемую модель кластера K-means, обучив ее на наборе данных, содержащем сотни изображений отжиманий и приседаний. Эти изображения были сделаны под разными углами, чтобы модель могла найти обобщенное решение и избежать переобучения.<p>"
+    private val title: String = "Магия машинного обучения"
+    // Функция для создания представления фрагмента
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,24 +29,25 @@ class InfoFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
 
             var isToolbarShown = false
-
-            // scroll change listener begins at Y = 0 when image is fully collapsed
+            // Обработчик прокрутки для показа или скрытия панели инструментов
+            // прослушиватель изменения прокрутки начинается с Y = 0, когда изображение полностью свернуто
             aicameraDetailScrollview.setOnScrollChangeListener(
                 NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
 
-                    // User scrolled past image to height of toolbar and the title text is
-                    // underneath the toolbar, so the toolbar should be shown.
+                    // Пользователь прокрутил изображение до высоты панели инструментов, и текст заголовка находится
+                    // под панелью инструментов, поэтому панель инструментов должна быть показана.
+                    // Проверка, нужно ли показывать панель инструментов
                     val shouldShowToolbar = scrollY > toolbar.height
 
-                    // The new state of the toolbar differs from the previous state; update
-                    // appbar and toolbar attributes.
+                    // Новое состояние панели инструментов отличается от предыдущего состояния; обновить
+                    // атрибуты панели приложений и панели инструментов.
                     if (isToolbarShown != shouldShowToolbar) {
                         isToolbarShown = shouldShowToolbar
 
-                        // Use shadow animator to add elevation if toolbar is shown
+                        // Используйте shadow animator для добавления высоты, если отображается панель инструментов
                         appbar.isActivated = shouldShowToolbar
 
-                        // Show the plant name if toolbar is shown
+                        // Показать название растения, если отображается панель инструментов
                         toolbarLayout.isTitleEnabled = shouldShowToolbar
                     }
                 }
@@ -54,9 +55,9 @@ class InfoFragment : Fragment() {
 
             setHasOptionsMenu(true)
             toolbar.setNavigationOnClickListener { view ->
-                view.findNavController().navigateUp()
+                view.findNavController().navigateUp()// Возвращение на предыдущий экран
             }
-
+            // Установка текста описания и заголовка
             aicameraDescription.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Html.fromHtml(description, Html.FROM_HTML_MODE_COMPACT)
             } else {
@@ -69,9 +70,9 @@ class InfoFragment : Fragment() {
 
 
 
-        return binding.root
+        return binding.root// Возвращение корневого представления
     }
-
+    // Функция, вызываемая при отсоединении фрагмента
     override fun onDetach() {
         super.onDetach()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
