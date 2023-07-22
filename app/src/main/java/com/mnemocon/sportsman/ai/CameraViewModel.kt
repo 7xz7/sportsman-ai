@@ -9,6 +9,15 @@ import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.defaults.PoseDetectorOptions
 import com.mnemocon.sportsman.ai.classification.PoseClassifierProcessor
 import com.mnemocon.sportsman.ai.data.Dao
+import com.mnemocon.sportsman.ai.data.Get
+import com.mnemocon.sportsman.ai.service.NetworkService
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class CameraViewModel (val database: Dao, safeContext: Application) : AndroidViewModel(safeContext) {
     var prothom: Boolean = true
@@ -36,6 +45,35 @@ class CameraViewModel (val database: Dao, safeContext: Application) : AndroidVie
 
     val poseDetector = PoseDetection.getClient(options)
 
+    //Отправляем данные об упражнении
+    fun sendExerciseData(){
+        // Create JSON using JSONObject
+        val jsonObject = JSONObject()
+        jsonObject.put("user_id","getUUID()")
+        jsonObject.put("device_uuid", "getDeviceUUID()")
+        jsonObject.put("activity_type", "exercise")
+        jsonObject.put("activity_count", 1)
+        jsonObject.put("time_spent", 60)
+        val json = jsonObject.toString()
+        val body: RequestBody =
+            json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+        NetworkService.instance?.getJSONApi()?.createUserExercise(body)
+            ?.enqueue(object : Callback<Get?> {
+                override fun onResponse(call: Call<Get?>, response: Response<Get?>) {
+                    val post = response.body()
+/*                    if( post?.count_users != "0") {
+                        userCount.postValue(post?.count_users)
+                        isSendExercise.postValue(true)
+                    }
+                    isLoading.postValue(false)*/
+                }
+
+                override fun onFailure(call: Call<Get?>, t: Throwable) {
+                   // isLoading.postValue(false)
+                }
+            })
+    }
 
     class Factory(val database: Dao, val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -47,3 +85,4 @@ class CameraViewModel (val database: Dao, safeContext: Application) : AndroidVie
         }
     }
 }
+

@@ -185,6 +185,7 @@ class Camera : Fragment() {
                     CameraDirections.actionCameraToCountingStopped(viewModel.pushups_cnt, viewModel.squats_cnt, temp.toInt())
                 val yo = TimeUtils.getTime() + " - " + TimeUtils.getDay() + " - " + TimeUtils.getMonth() + ", " + TimeUtils.getYear()
                 lifecycleScope.launch {
+                    viewModel.sendExerciseData()
                     viewModel.database.insert(Table( dateTime = yo, duration = "Duration: " + getTime(temp.toInt()), pushups = "Pushups: " + viewModel.pushups_cnt.toString(), squats = "Squats: " + viewModel.squats_cnt.toString() ))
                 }
                 findNavController().navigate(direction)
