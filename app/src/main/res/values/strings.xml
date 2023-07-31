@@ -13,4 +13,13 @@
     <string name="pushups_only">Отжимания</string>
     <string name="pushups_amp_squats"><![CDATA[Отжимания и Приседания]]></string>
     <string name="start_counting">Свободный стиль</string>
+    <string name="squats_count"> приседаний</string>
+    <string name="pushups_count"> отжиманий</string>
+    <string name="duration_count">Продолжительность:</string>
+    <string name="here_is_your_report">Ваш результат!</string>
+    <string name="counting_stopped">Тренировка закончена</string>
+    <string name="time_label">Время: </string>
+    <string name="second">сек</string>
+    <string name="hour">час</string>
+    <string name="min">мин</string>
 </resources>

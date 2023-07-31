@@ -43,7 +43,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/squat"
-                tools:text="Duration: 5s" />
+                tools:text="@string/duration_count" />
 
             <TextView
                 android:id="@+id/squat"
@@ -55,7 +55,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pushup"
-                tools:text="0 Squats" />
+                tools:text="@string/squats_count" />
 
             <TextView
                 android:id="@+id/pushup"
@@ -68,7 +68,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/message"
-                tools:text="3 Pushups" />
+                tools:text="@string/pushups_count" />
 
             <TextView
                 android:id="@+id/message"
