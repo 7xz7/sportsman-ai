@@ -63,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         // Инициализация Firebase Auth
         auth = Firebase.auth
         // [END initialize_auth]
+
     }
     // Проверка на наличие необходимых разрешений
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -87,8 +88,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
     // Запуск основной логики приложения
-    fun startLogic() {
-        Log.d("babu", "babu")
+    private fun startLogic() {
+        val currentUser = Firebase.auth.currentUser
+        currentUser?.let {
+            // Name, email address, and profile photo Url
+            val name = currentUser.displayName
+            val email = currentUser.email
+            val photoUrl = currentUser.photoUrl
+
+            // Check if user's email is verified
+            val emailVerified = currentUser.isEmailVerified
+
+            // The user's ID, unique to the Firebase project. Do NOT use this value to
+            // authenticate with your backend server, if you have one. Use
+            // FirebaseUser.getToken () instead.
+            val uid = currentUser.uid
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val navView: BottomNavigationView = binding.navView
@@ -190,6 +206,7 @@ class MainActivity : AppCompatActivity() {
 // Обновление пользовательского интерфейса на основе данных пользователя
     private fun updateUI(user: FirebaseUser?) {
     }
+
     // Объявление статических констант
     companion object {
         private const val TAG = "GoogleActivity"

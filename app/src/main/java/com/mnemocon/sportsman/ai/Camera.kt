@@ -31,6 +31,7 @@ import com.mnemocon.sportsman.ai.data.AppDatabase
 import com.mnemocon.sportsman.ai.data.Dao
 import com.mnemocon.sportsman.ai.data.Table
 import com.mnemocon.sportsman.ai.databinding.FragmentCameraBinding
+import com.mnemocon.sportsman.ai.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.Executor
@@ -47,7 +48,11 @@ class Camera : Fragment() {
     private var pushups: Boolean? = null
     private var squats: Boolean? = null
 
-    private lateinit var binding: FragmentCameraBinding
+    private var _binding: FragmentCameraBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     private var graphicOverlay: GraphicOverlay? = null
 
@@ -74,7 +79,6 @@ class Camera : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (activity as MainActivity).hideBottomNavigation()
         safeContext = context
         application = requireNotNull(this.activity).application
         dataSource = AppDatabase.getInstance(application).dao
@@ -83,17 +87,19 @@ class Camera : Fragment() {
             application
         ) {
             override fun onOrientationChanged(orientation: Int) {
-                if (orientation == 0) {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
-                else if(orientation == 180) {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
-                }
-                else if (orientation == 90) {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-                }
-                else if (orientation == 270) {
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                when (orientation) {
+                    0 -> {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    }
+                    180 -> {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
+                    }
+                    90 -> {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+                    }
+                    270 -> {
+                        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                    }
                 }
             }
         }
@@ -116,10 +122,6 @@ class Camera : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
-
-
         text_to_speech = TextToSpeech(
             application
         ) { status ->
@@ -128,8 +130,8 @@ class Camera : Fragment() {
             }
         }
 
-        binding = FragmentCameraBinding.inflate(layoutInflater, container, false)
-
+        _binding = FragmentCameraBinding.inflate(layoutInflater, container, false)
+        (activity as MainActivity).hideBottomNavigation()
         graphicOverlay = binding.graphicOverlay
 
         if( viewModel.mute ) {
@@ -441,7 +443,10 @@ class Camera : Fragment() {
         }
         return ans
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onDetach() {
         (activity as MainActivity).showBottomNavigation()
         super.onDetach()

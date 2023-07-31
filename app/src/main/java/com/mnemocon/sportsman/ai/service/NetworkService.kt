@@ -13,7 +13,7 @@ class NetworkService private constructor() {
     companion object {
         private var mInstance: NetworkService? = null
         private const val BASE_URL = "https://meditation.mnemocon.com/"
-        val instance: NetworkService?
+        @JvmStatic val instance: NetworkService?
             get() {
                 if (mInstance == null) {
                     mInstance = NetworkService()
