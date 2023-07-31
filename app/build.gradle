@@ -6,7 +6,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdkVersion
     buildFeatures {
         dataBinding true
         mlModelBinding true
@@ -46,10 +46,6 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
-    aaptOptions {
-        noCompress "tflite"
-        noCompress "lite"
-    }
     kotlinOptions {
         // work-runtime-ktx 2.1.0 and above now requires Java 8
         jvmTarget = "17"
@@ -64,8 +60,9 @@ android {
         }
     }
     namespace 'com.mnemocon.sportsman.ai'
-    androidResources {
+    aaptOptions {
         noCompress 'tflite'
+        noCompress 'lite'
     }
 }
 
@@ -106,7 +103,7 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.materialVersion"
     implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpLoggingVersion"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
     implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
 

@@ -49,11 +49,11 @@ class CameraViewModel (val database: Dao, safeContext: Application) : AndroidVie
     fun sendExerciseData(){
         // Create JSON using JSONObject
         val jsonObject = JSONObject()
-        jsonObject.put("user_id","getUUID()")
+        jsonObject.put("user_id","1")
         jsonObject.put("device_uuid", "getDeviceUUID()")
         jsonObject.put("activity_type", "exercise")
-        jsonObject.put("activity_count", 1)
-        jsonObject.put("time_spent", 60)
+        jsonObject.put("activity_count", "1")
+        jsonObject.put("time_spent", "60")
         val json = jsonObject.toString()
         val body: RequestBody =
             json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
