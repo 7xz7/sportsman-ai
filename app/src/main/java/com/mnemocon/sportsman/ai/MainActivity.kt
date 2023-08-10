@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -27,14 +28,55 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.mnemocon.sportsman.ai.databinding.ActivityMainBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.Result.Companion.success
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
+    // Поле для хранения ссылки на ViewModel
+    private lateinit var mainActivityViewModel: MainActivityViewModel
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
     // [END declare_auth]
+    // Создание переменной для хранения текущего пользователя
+    private var currentUser: FirebaseUser? = null
+
+    // Создание переменной для хранения области видимости корутины
+    private val scope = CoroutineScope(Dispatchers.Main)
+
+    // Создание функции для получения текущего пользователя асинхронно
+    private fun getCurrentUser() {
+        // Запуск корутины в основном потоке
+        scope.launch {
+            // Ожидание результата из другого потока с помощью async и await
+            currentUser = async(Dispatchers.IO) {
+                Firebase.auth.currentUser
+            }.await()
+            // Проверка наличия текущего пользователя и выполнение действий с ним
+            currentUser?.let {
+                // Name, email address, and profile photo Url
+                mainActivityViewModel._userUUID.value = currentUser!!.uid
+                val providerId = currentUser!!.providerId
+                val name = currentUser!!.displayName
+                val email = currentUser!!.email
+                val photoUrl = currentUser!!.photoUrl
+
+                // Check if user's email is verified
+                val emailVerified = currentUser!!.isEmailVerified
+
+                // The user's ID, unique to the Firebase project. Do NOT use this value to
+                // authenticate with your backend server, if you have one. Use
+                // FirebaseUser.getToken () instead.
+                val uid = currentUser!!.uid
+                mainActivityViewModel.sendUserData(currentUser!!.uid,
+                    currentUser!!.displayName!!, currentUser!!.email!!
+                )
+            }
+        }
+    }
 
     private lateinit var googleSignInClient: GoogleSignInClient
     // Объявление переменных для связки, аутентификации и авторизации через Google
@@ -89,24 +131,11 @@ class MainActivity : AppCompatActivity() {
     }
     // Запуск основной логики приложения
     private fun startLogic() {
-        val currentUser = Firebase.auth.currentUser
-        currentUser?.let {
-            // Name, email address, and profile photo Url
-            val name = currentUser.displayName
-            val email = currentUser.email
-            val photoUrl = currentUser.photoUrl
-
-            // Check if user's email is verified
-            val emailVerified = currentUser.isEmailVerified
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getToken () instead.
-            val uid = currentUser.uid
-        }
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Получаем ссылку на ViewModel с помощью ViewModelProvider
+        mainActivityViewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
         val navView: BottomNavigationView = binding.navView
 
         val navHostFragment =  supportFragmentManager
@@ -119,26 +148,29 @@ class MainActivity : AppCompatActivity() {
         // меню должно рассматриваться как пункты назначения верхнего уровня.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.startCounting, R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.startCounting, R.id.navigation_leaderboard, R.id.navigation_dashboard, R.id.navigation_notifications
             )
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        supportActionBar?.hide()
+        // Ваш код до вызова Firebase.auth.currentUser
+        getCurrentUser()
     }
     // Показать нижнее меню навигации
     fun showBottomNavigation()
     {
         binding.navView.visibility = View.VISIBLE
-        val actionBar: ActionBar? = supportActionBar //Get action bar reference
-        actionBar?.show() //Hide the action bar
+       // val actionBar: ActionBar? = supportActionBar //Get action bar reference
+        //actionBar?.show() //Hide the action bar
     }
     // Скрыть нижнее меню навигации
     fun hideBottomNavigation()
     {
         binding.navView.visibility = View.GONE
-        val actionBar: ActionBar? = supportActionBar //Get action bar reference
-        actionBar?.hide() //Hide the action bar
+        //val actionBar: ActionBar? = supportActionBar //Get action bar reference
+        //actionBar?.hide() //Hide the action bar
     }
     // Проверка авторизованного пользователя при старте активности
     // [START on_start_check_user]

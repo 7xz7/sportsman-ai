@@ -45,6 +45,9 @@ interface JSONPlaceHolderApi {
     @POST("api/aisport/add_exercise.php")
     fun createUserExercise(@Body params: RequestBody): Call<Get?>?
 
+    @POST("api/aisport/add_user.php")
+    fun createUser(@Body params: RequestBody): Call<Get?>?
+
     @GET("api/exercise/getcountusers.php")
     fun getCountUsers(): Call<Get?>?
 
