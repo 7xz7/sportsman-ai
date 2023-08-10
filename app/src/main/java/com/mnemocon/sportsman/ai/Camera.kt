@@ -19,6 +19,7 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -31,7 +32,6 @@ import com.mnemocon.sportsman.ai.data.AppDatabase
 import com.mnemocon.sportsman.ai.data.Dao
 import com.mnemocon.sportsman.ai.data.Table
 import com.mnemocon.sportsman.ai.databinding.FragmentCameraBinding
-import com.mnemocon.sportsman.ai.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.Executor
@@ -44,6 +44,7 @@ private const val SQUATS = "squats"
 class Camera : Fragment() {
 
 
+    private val mainActivityViewModel: MainActivityViewModel by activityViewModels()
 
     private var pushups: Boolean? = null
     private var squats: Boolean? = null
@@ -126,7 +127,7 @@ class Camera : Fragment() {
             application
         ) { status ->
             if (status != TextToSpeech.ERROR) {
-                text_to_speech.language = Locale.UK
+                text_to_speech.language = Locale("ru")
             }
         }
 
@@ -187,7 +188,7 @@ class Camera : Fragment() {
                     CameraDirections.actionCameraToCountingStopped(viewModel.pushups_cnt, viewModel.squats_cnt, temp.toInt())
                 val yo = TimeUtils.getTime() + " - " + TimeUtils.getDay() + " - " + TimeUtils.getMonth() + ", " + TimeUtils.getYear()
                 lifecycleScope.launch {
-                    viewModel.sendExerciseData()
+                    viewModel.sendExerciseData(mainActivityViewModel.userUUID.value!!)
                     viewModel.database.insert(Table( dateTime = yo, duration = "Duration: " + getTime(temp.toInt()), pushups = "Pushups: " + viewModel.pushups_cnt.toString(), squats = "Squats: " + viewModel.squats_cnt.toString() ))
                 }
                 findNavController().navigate(direction)

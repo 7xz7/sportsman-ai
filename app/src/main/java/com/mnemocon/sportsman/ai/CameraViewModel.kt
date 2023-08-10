@@ -46,14 +46,14 @@ class CameraViewModel (val database: Dao, safeContext: Application) : AndroidVie
     val poseDetector = PoseDetection.getClient(options)
 
     //Отправляем данные об упражнении
-    fun sendExerciseData(){
+    fun sendExerciseData(user_UUID:String){
         // Create JSON using JSONObject
         val jsonObject = JSONObject()
-        jsonObject.put("user_id","1")
-        jsonObject.put("device_uuid", "getDeviceUUID()")
-        jsonObject.put("activity_type", "exercise")
-        jsonObject.put("activity_count", "1")
-        jsonObject.put("time_spent", "60")
+        jsonObject.put("user_id",user_UUID)
+        jsonObject.put("device_uuid", user_UUID)
+        jsonObject.put("activity_type", if (squats_cnt > 0) "Squats" else "Pushups")
+        jsonObject.put("activity_count", if(squats_cnt > 0) squats_cnt.toString() else pushups_cnt.toString())
+        jsonObject.put("time_spent", ((System.currentTimeMillis()/1000) - start_time).toString())
         val json = jsonObject.toString()
         val body: RequestBody =
             json.toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())

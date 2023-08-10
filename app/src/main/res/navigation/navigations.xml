@@ -64,10 +64,10 @@
         android:name="com.mnemocon.sportsman.ai.SeePastCounts"
         android:label="SeePastCounts" />
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.mnemocon.sportsman.ai.ui.home.HomeFragment"
+        android:id="@+id/navigation_leaderboard"
+        android:name="com.mnemocon.sportsman.ai.ui.leaderboard.LeaderBoardFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_leader_board" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
