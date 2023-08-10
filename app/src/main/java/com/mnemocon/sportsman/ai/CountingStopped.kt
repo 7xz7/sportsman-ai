@@ -1,5 +1,6 @@
 package com.mnemocon.sportsman.ai
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,6 +33,7 @@ class CountingStopped : Fragment() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,8 +46,8 @@ class CountingStopped : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.pushup.text = pushups.toString() + " pushups"
-        binding.squat.text = squats.toString() + " squats"
+        binding.pushup.text = pushups.toString()  + " " + getString(R.string.squats_count)
+        binding.squat.text = squats.toString() + " " + getString(R.string.pushups_count)
         binding.time.text = getTime()
 
         return binding.root
@@ -58,16 +60,16 @@ class CountingStopped : Fragment() {
         time = time!! % 60
         var sec = time
 
-        var ans : String = "Time: "
+        var ans : String = getString(R.string.time_label) + " "
 
         if( hour == 0 && minute == 0 ) {
-            ans += sec.toString() + "s"
+            ans += sec.toString() + getString(R.string.second)
         }
         else {
-            if(hour > 0) ans += hour.toString() + "h"
-            if(minute > 0) ans += minute.toString() + "m"
+            if(hour > 0) ans += hour.toString() + getString(R.string.hour)
+            if(minute > 0) ans += minute.toString() + getString(R.string.min)
             if (sec != null) {
-                if(sec > 0) ans += sec.toString() + "s"
+                if(sec > 0) ans += sec.toString() + getString(R.string.second)
             }
         }
         return ans
