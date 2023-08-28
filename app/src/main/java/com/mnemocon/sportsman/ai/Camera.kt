@@ -140,7 +140,7 @@ class Camera : Fragment() {
         }
         if( viewModel.isStart ) {
             binding.cardStartStop.setBackgroundColor(Color.parseColor("#b71c1c"))
-            binding.cardButton.text = "Stop"
+            binding.cardButton.text = "Стоп"
             binding.cardButton.setTextColor(Color.parseColor("#ffffff"))
         }
 
@@ -176,9 +176,9 @@ class Camera : Fragment() {
         }
 
         binding.info.setOnClickListener {
-            if( (pushups == true) && (squats == true) ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing pushups and squats", Toast.LENGTH_SHORT).show()
-            else if( pushups == true ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing pushups", Toast.LENGTH_SHORT).show()
-            else if( squats == true ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing squats", Toast.LENGTH_SHORT).show()
+            if( (pushups == true) && (squats == true) ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы отжимаетесь и приседаете", Toast.LENGTH_SHORT).show()
+            else if( pushups == true ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы отжимаетесь", Toast.LENGTH_SHORT).show()
+            else if( squats == true ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы делаете приседания", Toast.LENGTH_SHORT).show()
         }
 
         binding.cardStartStop.setOnClickListener {
@@ -189,14 +189,14 @@ class Camera : Fragment() {
                 val yo = TimeUtils.getTime() + " - " + TimeUtils.getDay() + " - " + TimeUtils.getMonth() + ", " + TimeUtils.getYear()
                 lifecycleScope.launch {
                     viewModel.sendExerciseData(mainActivityViewModel.userUUID.value!!)
-                    viewModel.database.insert(Table( dateTime = yo, duration = "Duration: " + getTime(temp.toInt()), pushups = "Pushups: " + viewModel.pushups_cnt.toString(), squats = "Squats: " + viewModel.squats_cnt.toString() ))
+                    viewModel.database.insert(Table( dateTime = yo, duration = "Продолжительность: " + getTime(temp.toInt()), pushups = "Отжимания: " + viewModel.pushups_cnt.toString(), squats = "Приседания: " + viewModel.squats_cnt.toString() ))
                 }
                 findNavController().navigate(direction)
             } else {
                 viewModel.start_time = System.currentTimeMillis()/1000
                 viewModel.isStart = true
                 binding.cardStartStop.setBackgroundColor(Color.parseColor("#b71c1c"))
-                binding.cardButton.text = "Stop"
+                binding.cardButton.text = "Стоп"
                 binding.cardButton.setTextColor(Color.parseColor("#ffffff"))
                 bindUseCases(viewModel.which_camera, viewModel.isFlash, viewModel.isStart)
             }
@@ -206,10 +206,10 @@ class Camera : Fragment() {
             viewModel.mute = !viewModel.mute
             if( viewModel.mute ) {
                 binding.mute.setImageResource(R.drawable.mute_red)
-                Toast.makeText(application, "Voice mode deactivated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(application, "Голосовой режим отключен", Toast.LENGTH_SHORT).show()
             } else {
                 binding.mute.setImageResource(R.drawable.mute_white)
-                Toast.makeText(application, "Voice mode activated", Toast.LENGTH_SHORT).show()
+                Toast.makeText(application, "Активирован голосовой режим", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -219,11 +219,11 @@ class Camera : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if(viewModel.prothom) {
-            if( (pushups == true) && (squats == true) ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing pushups and squats", Toast.LENGTH_SHORT).show()
-            else if( pushups == true ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing pushups", Toast.LENGTH_SHORT).show()
-            else if( squats == true ) Toast.makeText(application, "Place camera in such a way that is can clearly see you doing squats", Toast.LENGTH_SHORT).show()
+            if( (pushups == true) && (squats == true) ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы отжимаетесь и приседаете", Toast.LENGTH_SHORT).show()
+            else if( pushups == true ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы отжимаетесь", Toast.LENGTH_SHORT).show()
+            else if( squats == true ) Toast.makeText(application, "Расположите камеру таким образом, чтобы было хорошо видно, как вы делаете приседания", Toast.LENGTH_SHORT).show()
 
-            Toast.makeText(application, "Voice mode activated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(application, "Активирован голосовой режим", Toast.LENGTH_SHORT).show()
             viewModel.prothom = false
         }
         if(viewModel.which_camera == 0) {
@@ -358,7 +358,7 @@ class Camera : Fragment() {
                                     haha = true
                                 }
                                 viewModel.pushups_cnt = hu_list[2].toInt()
-                                var toSpeak = "Pushup number " + viewModel.pushups_cnt.toString()
+                                var toSpeak = "Отжимание номер " + viewModel.pushups_cnt.toString()
                                 if (viewModel.pushups > 3) toSpeak =
                                     viewModel.pushups_cnt.toString()
                                 if (!viewModel.mute && haha) text_to_speech.speak(
@@ -380,7 +380,7 @@ class Camera : Fragment() {
                                     haha = true
                                 }
                                 viewModel.squats_cnt = hu_list[2].toInt()
-                                var toSpeak = "Squat number " + viewModel.squats_cnt.toString()
+                                var toSpeak = "Приседание номер " + viewModel.squats_cnt.toString()
                                 if (viewModel.squats > 3) toSpeak = viewModel.squats_cnt.toString()
                                 if (!viewModel.mute && haha) text_to_speech.speak(
                                     toSpeak,
@@ -390,8 +390,8 @@ class Camera : Fragment() {
                                 )
                             }
                             _binding?.let { binding ->
-                                binding.tv1.text = "PUSHUPS: " + viewModel.pushups_cnt.toString()
-                                binding.tv2.text = "SQUATS: " + viewModel.squats_cnt.toString()
+                                binding.tv1.text = "Отжимания: " + viewModel.pushups_cnt.toString()
+                                binding.tv2.text = "Приседания: " + viewModel.squats_cnt.toString()
                             }
                         }
                     }

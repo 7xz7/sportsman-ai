@@ -6,9 +6,10 @@
     <string name="play">PLAY</string>
     <string name="info">INFO</string>
     <string name="title_activity_main2">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Главная</string>
+    <string name="title_leaderboard">Лидеры</string>
+    <string name="title_profile">Профиль</string>
+    <string name="title_statistic">Статистика</string>
     <string name="squats_only">Приседания</string>
     <string name="pushups_only">Отжимания</string>
     <string name="pushups_amp_squats"><![CDATA[Отжимания и Приседания]]></string>

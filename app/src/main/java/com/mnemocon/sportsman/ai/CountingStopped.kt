@@ -46,8 +46,8 @@ class CountingStopped : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.pushup.text = pushups.toString()  + " " + getString(R.string.squats_count)
-        binding.squat.text = squats.toString() + " " + getString(R.string.pushups_count)
+        binding.pushup.text = pushups.toString()  + " " + getString(R.string.pushups_count)
+        binding.squat.text = squats.toString() + " " + getString(R.string.squats_count)
         binding.time.text = getTime()
 
         return binding.root

@@ -72,12 +72,12 @@
     <fragment
         android:id="@+id/navigation_user_profile"
         android:name="com.mnemocon.sportsman.ai.ui.user_profile.UserProfileFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_profile"
         tools:layout="@layout/fragment_user_profile" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.mnemocon.sportsman.ai.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_statistic"
         tools:layout="@layout/fragment_notifications" />
 </navigation>
