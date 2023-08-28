@@ -3,6 +3,8 @@ package com.mnemocon.sportsman.ai
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.mnemocon.sportsman.ai.data.Get
 import com.mnemocon.sportsman.ai.service.NetworkService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -19,6 +21,30 @@ class MainActivityViewModel : ViewModel() {
     }
     val userUUID: LiveData<String> = _userUUID
 
+    val _userName = MutableLiveData<String>().apply {
+        value = "Default Name" // Задай здесь начальное значение, если необходимо
+    }
+    val userName: LiveData<String> = _userName
+
+    // Метод для обновления имени пользователя
+    fun updateUserName(newName: String) {
+        _userName.value = newName
+        // Отправка нового имени на сервер или другие действия
+    }
+    fun updateFirebaseUserName(newName: String) {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        val profileUpdates = UserProfileChangeRequest.Builder()
+            .setDisplayName(newName)
+            .build()
+
+        user?.updateProfile(profileUpdates)
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    updateUserName(newName) // Обновление LiveData с именем пользователя
+                }
+            }
+    }
     //Отправляем данные о Пользователе
     fun sendUserData(userUUID:String, userName:String, userEmail:String){
         // Create JSON using JSONObject

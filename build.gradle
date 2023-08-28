@@ -2,9 +2,9 @@ buildscript {
     // Define versions in a single place
     ext {
         // Sdk and tools
-        compileSdkVersion = 33
+        compileSdkVersion = 34
         minSdkVersion = 23
-        targetSdkVersion = 33
+        targetSdkVersion = 34
 
         // App dependencies
         appCompatVersion = '1.6.1'
@@ -23,7 +23,7 @@ buildscript {
         ktxVersion = '1.10.1'
         lifecycleVersion = '2.6.1'
         materialVersion = '1.9.0'
-        navigationVersion = '2.6.0'
+        navigationVersion = '2.7.0'
         okhttpLoggingVersion = '5.0.0-alpha.11'
         pagingVersion = '3.2.0'
         retrofitVersion = '2.9.0'
@@ -44,7 +44,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$gradleVersion"
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.6.0"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.7.0"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.40.1"
         classpath 'com.google.gms:google-services:4.3.15'
     }
@@ -53,7 +53,7 @@ buildscript {
 plugins {
     id "com.diffplug.spotless" version "5.2.0"
     id 'org.jetbrains.kotlin.android' version '1.8.20' apply false
-    id("com.google.devtools.ksp") version "1.8.10-1.0.9" apply false
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
 }
 
 allprojects {

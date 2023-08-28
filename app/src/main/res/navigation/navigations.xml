@@ -70,10 +70,10 @@
         tools:layout="@layout/fragment_leader_board" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.mnemocon.sportsman.ai.ui.dashboard.DashboardFragment"
+        android:id="@+id/navigation_user_profile"
+        android:name="com.mnemocon.sportsman.ai.ui.user_profile.UserProfileFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_user_profile" />
 
     <fragment
         android:id="@+id/navigation_notifications"

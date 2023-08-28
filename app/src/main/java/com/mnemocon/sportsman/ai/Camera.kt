@@ -249,7 +249,9 @@ class Camera : Fragment() {
             preview = Preview.Builder()
                 .build()
                 .also {
-                    it.setSurfaceProvider(binding.previewView.surfaceProvider)
+                    _binding?.let { binding ->
+                        it.setSurfaceProvider(binding.previewView.surfaceProvider)
+                    }
                 }
 
             Log.d("FaceDetection", "huhuhuh")
@@ -387,8 +389,10 @@ class Camera : Fragment() {
                                     null
                                 )
                             }
-                            binding.tv1.text = "PUSHUPS: " + viewModel.pushups_cnt.toString()
-                            binding.tv2.text = "SQUATS: " + viewModel.squats_cnt.toString()
+                            _binding?.let { binding ->
+                                binding.tv1.text = "PUSHUPS: " + viewModel.pushups_cnt.toString()
+                                binding.tv2.text = "SQUATS: " + viewModel.squats_cnt.toString()
+                            }
                         }
                     }
                     graphicOverlay!!.clear()
