@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -148,7 +147,7 @@ class MainActivity : AppCompatActivity() {
         // меню должно рассматриваться как пункты назначения верхнего уровня.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.startCounting, R.id.navigation_leaderboard, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.startCounting, R.id.navigation_leaderboard, R.id.navigation_user_profile, R.id.navigation_notifications
             )
         )
 
@@ -211,7 +210,7 @@ class MainActivity : AppCompatActivity() {
     // [END onactivityresult]
 // Запуск процесса авторизации через Google
     // [START signin]
-   fun signIn(success: (Boolean) -> Unit) {
+    private fun signIn(success: (Boolean) -> Unit) {
         val signInIntent = googleSignInClient.signInIntent
         signInLauncher.launch(signInIntent)
     }
@@ -237,6 +236,10 @@ class MainActivity : AppCompatActivity() {
     // [END auth_with_google]
 // Обновление пользовательского интерфейса на основе данных пользователя
     private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            mainActivityViewModel.updateUserName(user.displayName ?: "Default Name")
+            // Другой код для обновления пользовательского интерфейса
+        }
     }
 
     // Объявление статических констант

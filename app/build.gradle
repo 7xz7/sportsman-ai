@@ -4,6 +4,7 @@ apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: "com.google.devtools.ksp"
 
 android {
     compileSdk rootProject.compileSdkVersion
@@ -68,7 +69,7 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-auth-ktx:22.1.0'
+    implementation 'com.google.firebase:firebase-auth-ktx:22.1.1'
     implementation 'com.google.android.gms:play-services-auth:20.6.0'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -83,9 +84,9 @@ dependencies {
     implementation "androidx.camera:camera-view:${camerax_version}"
 
 
-    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
-    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
-    kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
+    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
+    ksp "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+    ksp "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
     implementation "androidx.core:core-ktx:$rootProject.ktxVersion"

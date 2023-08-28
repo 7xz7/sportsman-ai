@@ -1,10 +1,10 @@
-package com.mnemocon.sportsman.ai.ui.dashboard
+package com.mnemocon.sportsman.ai.ui.user_profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class UserProfileViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"
